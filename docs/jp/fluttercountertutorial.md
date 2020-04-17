@@ -28,33 +28,33 @@
 
 ## Counter States
 
-Since our counter's state can be represented by an integer we don't need to create a custom class!
+今回のカウンターアプリの state はただの int なので、クラスを作る必要はありません。
 
 ## Counter Bloc
 
 [counter_bloc.dart](../_snippets/flutter_counter_tutorial/counter_bloc.dart.md ':include')
 
-?> **Note**: Just from the class declaration we can tell that our `CounterBloc` will be taking `CounterEvents` as input and outputting integers.
+?> **メモ**: `CounterBloc`の定義を見ただけで`CounterEvents`を入力し int を出力することがわかりますね。
 
-## Counter App
+## カウンターアプリ
 
-Now that we have our `CounterBloc` fully implemented, we can get started creating our Flutter application.
+ここまでくれば`CounterBloc`の実装は完了です。あとは Flutter のアプリを作成しましょう。
 
 [main.dart](../_snippets/flutter_counter_tutorial/main.dart.md ':include')
 
-?> **Note**: We are using the `BlocProvider` widget from `flutter_bloc` in order to make the instance of `CounterBloc` available to the entire subtree (`CounterPage`). `BlocProvider` also handles closing the `CounterBloc` automatically so we don't need to use a `StatefulWidget`.
+?> **メモ**: `CounterBloc`のインスタンスを`CounterPage`のどこからでもアクセスできるようにするために`flutter_bloc`パッケージの`BlocProvider`を使います。 `BlocProvider`は`CounterBloc`を自動的に close してくれるので`StatefulWidget`のライフサイクルメソッドを使う必要がありません。
 
-## Counter Page
+## カウンターページ
 
-Finally, all that's left is to build our Counter Page.
+あとはカウンターページを作成するだけです。
 
 [counter_page.dart](../_snippets/flutter_counter_tutorial/counter_page.dart.md ':include')
 
-?> **Note**: We are able to access the `CounterBloc` instance using `BlocProvider.of<CounterBloc>(context)` because we wrapped our `CounterPage` in a `BlocProvider`.
+?> **メモ**: `CounterPage`を`BlocProvider`で囲ったので`BlocProvider.of<CounterBloc>(context)`を使って`CounterBloc`インスタンスにアクセスすることができます。
 
-?> **Note**: We are using the `BlocBuilder` widget from `flutter_bloc` in order to rebuild our UI in response to state changes (changes in the counter value).
+?> **メモ**: `flutter_bloc`パッケージの`BlocBuilder`ウィジェットを使って state の変化（カウンターの値の変化）に応じて UI を変化させられるようにしています。
 
-?> **Note**: `BlocBuilder` takes an optional `bloc` parameter but we can specify the type of the bloc and the type of the state and `BlocBuilder` will find the bloc automatically so we don't need to explicity use `BlocProvider.of<CounterBloc>(context)`.
+?> **メモ**: `BlocBuilder` takes an optional `bloc` parameter but we can specify the type of the bloc and the type of the state and `BlocBuilder` will find the bloc automatically so we don't need to explicity use `BlocProvider.of<CounterBloc>(context)`.
 
 !> Only specify the bloc in `BlocBuilder` if you wish to provide a bloc that will be scoped to a single widget and isn't accessible via a parent `BlocProvider` and the current `BuildContext`.
 
