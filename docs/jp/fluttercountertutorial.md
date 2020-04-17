@@ -1,26 +1,26 @@
-# Flutter Counter Tutorial
+# Flutter カウンターチュートリアル
 
 ![beginner](https://img.shields.io/badge/level-beginner-green.svg)
 
-> In the following tutorial, we're going to build a Counter in Flutter using the Bloc library.
+> このチュートリアルでは Bloc ライブラリーを使ってカウンターアプリを作ります。
 
 ![demo](../../assets/gifs/flutter_counter.gif)
 
-## Setup
+## セットアップ
 
-We'll start off by creating a brand new Flutter project
+まず新規の Flutter プロジェクトを作るところから始めます
 
 [script](../_snippets/flutter_counter_tutorial/flutter_create.sh.md ':include')
 
-We can then go ahead and replace the contents of `pubspec.yaml` with
+`pubspec.yaml`の中身をこちらに書き換えましょう
 
 [pubspec.yaml](../_snippets/flutter_counter_tutorial/pubspec.yaml.md ':include')
 
-and then install all of our dependencies
+それができたらパッケージをインストールしましょう
 
 [script](../_snippets/flutter_counter_tutorial/flutter_packages_get.sh.md ':include')
 
-Our counter app is just going to have two buttons to increment/decrement the counter value and a `Text` widget to display the current value. Let's get started designing the `CounterEvents`.
+今回作るカウンターアプリには加算と減算をするための二つのボタンと現在のカウントを表示するための`Text`ウィジェットがあります。まずは`CounterEvents`を作成するところから始めましょう。
 
 ## Counter Events
 
