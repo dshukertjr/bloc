@@ -56,10 +56,10 @@
 
 ?> **メモ**: `BlocBuilder` takes an optional `bloc` parameter but we can specify the type of the bloc and the type of the state and `BlocBuilder` will find the bloc automatically so we don't need to explicity use `BlocProvider.of<CounterBloc>(context)`.
 
-!> Only specify the bloc in `BlocBuilder` if you wish to provide a bloc that will be scoped to a single widget and isn't accessible via a parent `BlocProvider` and the current `BuildContext`.
+!> `BlocBuilder`の bloc 引数を渡すのはそのウィジェットにのみ Bloc を渡したい場合かつその時の`BuildContext`先祖ウィジェットにその bloc 用の`BlocProvider`が無い場合のみにしましょう。
 
-That's it! We've separated our presentation layer from our business logic layer. Our `CounterPage` has no idea what happens when a user presses a button; it just adds an event to notify the `CounterBloc`. Furthermore, our `CounterBloc` has no idea what is happening with the state (counter value); it's simply converting the `CounterEvents` into integers.
+これでプレゼンテーションレイヤーとビジネスロジックレイヤーを分けることに成功しました。`CounterPage`はユーザーがボタンを押した時に何が起こるかなんて知る由もありません。ただ`CounterBloc`に event を送るだけです。逆も然りで、`CounterBloc`は state (カウンターの数値)がどのように使われているかなんて知る由もありません。ただシンプルに受け取った`CounterEvents`を元に int を返しているだけです。
 
-We can run our app with `flutter run` and can view it on our device or simulator/emulator.
+アプリは`flutter run`コマンドを使ってシミュレーター/エミュレーターや実機で動かすことができます。
 
-The full source for this example can be found [here](https://github.com/felangel/Bloc/tree/master/packages/flutter_bloc/example).
+このアプリのソースコードは[こちら](https://github.com/felangel/Bloc/tree/master/packages/flutter_bloc/example)に置いてあります。
