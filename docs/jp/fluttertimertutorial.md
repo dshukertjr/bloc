@@ -1,20 +1,20 @@
-# Flutter Timer Tutorial
+# Flutter タイマーチュートリアル
 
 ![beginner](https://img.shields.io/badge/level-beginner-green.svg)
 
-> In the following tutorial we’re going to cover how to build a timer application using the bloc library. The finished application should look like this:
+> このチュートリアルではキッチンタイマーのようなタイマーアプリを bloc ライブラリーを使ってどのように開発するかを見ていきます。完成品はこのような形になります。
 
 ![demo](../assets/gifs/flutter_timer.gif)
 
-## Setup
+## 準備
 
-We’ll start off by creating a brand new Flutter project
+まずは新規の Flutter プロジェクトを作りましょう
 
 ```sh
 flutter create flutter_timer
 ```
 
-We can then replace the contents of pubspec.yaml with:
+pubspec.yaml の中身を下記のように書き換えます：
 
 ```yaml
 name: flutter_timer
@@ -23,7 +23,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -36,15 +36,15 @@ flutter:
   uses-material-design: true
 ```
 
-?> **Note:** We’ll be using the [flutter_bloc](https://pub.dev/packages/flutter_bloc), [equatable](https://pub.dev/packages/equatable), and [wave](https://pub.dev/packages/wave) packages in this app.
+?> **メモ:** [flutter_bloc](https://pub.dev/packages/flutter_bloc)と[equatable](https://pub.dev/packages/equatable)そして[wave](https://pub.dev/packages/wave)パッケージをこのアプリでは使います。
 
-Next, run `flutter packages get` to install all the dependencies.
+次に`flutter packages get`を実行しパッケージをインストールします。
 
 ## Ticker
 
-> The ticker will be our data source for the timer application. It will expose a stream of ticks which we can subscribe and react to.
+> Ticker がこのアプリのデータソースとなります。毎秒時間のデータが乗った Stream を公開し、それに subscribe することで時間の経過に応じてコードを実行できます。
 
-Start off by creating `ticker.dart`.
+まずは`ticker.dart`を作成しましょう。
 
 ```dart
 class Ticker {
@@ -55,22 +55,22 @@ class Ticker {
 }
 ```
 
-All our `Ticker` class does is expose a tick function which takes the number of ticks (seconds) we want and returns a stream which emits the remaining seconds every second.
+`Ticker`クラスは何秒間カウントダウンしたいか（何回 tick したいか）を引数に取り、１秒間に１度、残り時間を乗せた Stream を公開しているだけです。
 
-Next up, we need to create our `TimerBloc` which will consume the `Ticker`.
+次にこの`Ticker`を使って`TimerBloc`を作りましょう。
 
 ## Timer Bloc
 
 ### TimerState
 
-We’ll start off by defining the `TimerStates` which our `TimerBloc` can be in.
+まずは`TimerBloc`が取れる`TimerStates`を定義しましょう。
 
-Our `TimerBloc` state can be one of the following:
+`TimerBloc`の state はこれらのいずれかになります：
 
-- Ready — ready to start counting down from the specified duration.
-- Running — actively counting down from the specified duration.
-- Paused — paused at some remaining duration.
-- Finished — completed with a remaining duration of 0.
+- Ready — カウントダウンの準備ができている状態。
+- Running —  特定の時間からカウントダウンをしている真っ最中。
+- Paused —  特定の時間でカウントダウンを一時停止している状態。
+- Finished —  残り時間が 0 になりカウントダウンを完了した状態。
 
 Each of these states will have an implication on what the user sees. For example:
 

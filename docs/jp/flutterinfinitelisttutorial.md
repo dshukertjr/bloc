@@ -4,7 +4,7 @@
 
 > In this tutorial, we’re going to be implementing an app which fetches data over the network and loads it as a user scrolls using Flutter and the bloc library.
 
-![demo](../assets/gifs/flutter_infinite_list.gif)
+![demo](../../assets/gifs/flutter_infinite_list.gif)
 
 ## Setup
 
@@ -23,7 +23,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   flutter:
