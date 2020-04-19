@@ -788,21 +788,21 @@ class Timer extends StatelessWidget {
 }
 ```
 
-We added another `BlocBuilder` which will render the `Actions` widget; however, this time we’re using a newly introduced [flutter_bloc](https://pub.dev/packages/flutter_bloc) feature to control how frequently the `Actions` widget is rebuilt (introduced in `v0.15.0`).
+`Actions`ウィジェットを表示するためにまた一つ新たな`BlocBuilder`を使いましたが、今回は[flutter_bloc](https://pub.dev/packages/flutter_bloc)に備わっている機能を使って`Actions`が再描画される頻度をコントロールしています。
 
-If you want fine-grained control over when the `builder` function is called you can provide an optional `condition` to `BlocBuilder`. The `condition` takes the previous bloc state and current bloc state and returns a `boolean`. If `condition` returns `true`, `builder` will be called with `state` and the widget will rebuild. If `condition` returns `false`, `builder` will not be called with `state` and no rebuild will occur.
+もし、`builder`が再描画をおこうなう条件を細かくコントロールしたい場合は`BlocBuilder`の`condition`を使いましょう。`condition`は一個前の state と今の state を引数としてとり、`boolean`を返す関数です。もし、`condition`が`true`を返したら`builder`はその`state`で実行され、ウィジェットが再描画されます。もし、`condition`が`false`を返した場合は`builder`はその`state`では呼ばれず、再描画も起きません。
 
-In this case, we don’t want the `Actions` widget to be rebuilt on every tick because that would be inefficient. Instead, we only want `Actions` to rebuild if the `runtimeType` of the `TimerState` changes (Ready => Running, Running => Paused, etc...).
+この場合`Actions`ウィジェットを毎秒カウントダウンが進むたびに再描画していたら非効率的です。代わりに、` Actions``TimerState `の`runtimeType`（型）が変化したら再描画するべきです(Ready => Running, Running => Paused, などなど...)。
 
-As a result, if we randomly colored the widgets on every rebuild, it would look like:
+例えば、再描画ごとにランダムにウィジェットの色を変化させるとこのようになります:
 
 ![BlocBuilder condition demo](https://cdn-images-1.medium.com/max/1600/1*YyjpH1rcZlYWxCX308l_Ew.gif)
 
-?> **Notice:** Even though the `Text` widget is rebuilt on every tick, we only rebuild the `Actions` if they need to be rebuilt.
+?> **メモ:** `Text`は毎秒再描画されていますが、`Actions`は必要な時しか再描画されていないことがわかりますよね？
 
-Lastly, we need to add the super cool wave background using the [wave](https://pub.dev/packages/wave) package.
+最後に最高にかっちょいい波の背景を[wave](https://pub.dev/packages/wave)パッケージを使ってつけて完成です。
 
-### Waves Background
+### 波の背景
 
 ```dart
 import 'package:flutter/material.dart';
@@ -844,9 +844,9 @@ class Background extends StatelessWidget {
 }
 ```
 
-### Putting it all together
+### 全部合わせる
 
-Our finished, `main.dart` should look like:
+完成形の`main.dart`はこうなります:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -1022,6 +1022,6 @@ class Background extends StatelessWidget {
 }
 ```
 
-That’s all there is to it! At this point we have a pretty solid timer application which efficiently rebuilds only widgets that need to be rebuilt.
+これで完成です！ここまできたら必要最低限の再描画しか行わない効率的なタイマーアプリが作成できたはずです。
 
-The full source for this example can be found [here](https://github.com/felangel/Bloc/tree/master/examples/flutter_timer).
+完成形のソースコードはこちら[こちら](https://github.com/felangel/Bloc/tree/master/examples/flutter_timer)で確認することができます。
