@@ -73,15 +73,16 @@ class Ticker {
 - Finished —  残り時間が 0 になりカウントダウンを完了した状態。
 
 Each of these states will have an implication on what the user sees. For example:
+これらの state は全て固有のアプリに対するアクションを持っています。例えば:
 
-- if the state is “ready,” the user will be able to start the timer.
-- if the state is “running,” the user will be able to pause and reset the timer as well as see the remaining duration.
-- if the state is “paused,” the user will be able to resume the timer and reset the timer.
-- if the state is “finished,” the user will be able to reset the timer.
+- アプリが“ready”の時はユーザーはタイマーをスタートさせることができます。
+- アプリが“running”の時はユーザーはアプリを一時停止やリセットでき、残り時間を確認することができます。
+- アプリが“paused”の時はユーザーはカウントダウンを再開したり、リセットしたりできます。
+- アプリが“finished”の時はユーザーはタイマーをリセットすることができます。
 
-In order to keep all of our bloc files together, let’s create a bloc directory with `bloc/timer_state.dart`.
+Bloc 系のファイルを一箇所にまとめられるように bloc というディレクトリーを作り、そこにこのように`bloc/timer_state.dart`入れましょう。
 
-?> **Tip:** You can use the [IntelliJ](https://plugins.jetbrains.com/plugin/12129-bloc-code-generator) or [VSCode](https://marketplace.visualstudio.com/items?itemName=FelixAngelov.bloc) extensions to autogenerate the following bloc files for you.
+?> **豆知識:** [IntelliJ](https://plugins.jetbrains.com/plugin/12129-bloc-code-generator)か[VSCode](https://marketplace.visualstudio.com/items?itemName=FelixAngelov.bloc)のエクステンションを使うことで関連ファイルを一括で自動生成することができます。
 
 ```dart
 import 'package:equatable/equatable.dart';
@@ -121,21 +122,24 @@ class Finished extends TimerState {
 }
 ```
 
-Note that all of the `TimerStates` extend the abstract base class `TimerState` which has a duration property. This is because no matter what state our `TimerBloc` is in, we want to know how much time is remaining.
+注目して欲しいのは全ての`TimerState`はベースクラスである`TimerState`を継承しているので全て duration プロパティを持っています。これは`TimerBloc`がどの state だったとしてもタイマーの残り時間は見れるようにしておきたいからです。
 
-Next up, let’s define and implement the `TimerEvents` which our `TimerBloc` will be processing.
+次に`TimerBloc`に渡される`TimerEvent`を定義していきましょう。
 
 ### TimerEvent
 
 Our `TimerBloc` will need to know how to process the following events:
+`TimerBloc`は下記の event を処理する必要があるでしょう：
 
-- Start — informs the TimerBloc that the timer should be started.
-- Pause — informs the TimerBloc that the timer should be paused.
-- Resume — informs the TimerBloc that the timer should be resumed.
-- Reset — informs the TimerBloc that the timer should be reset to the original state.
-- Tick — informs the TimerBloc that a tick has occurred and that it needs to update its state accordingly.
+- Start — TimerBloc にカウントダウンの開始を知らせる。
+- Pause — TimerBloc にカウントダウンの一時停止を知らせる。
+- Resume — TimerBloc にカウントダウンの再開を知らせる。
+- Reset — TimerBloc に元の状態にリセットするように知らせる。
+- Tick — TimerBloc に tick が起きた（カウントダウンが発生し残り時間が減少した）ことを知らせ state をアップデートさせる。
 
-If you didn’t use the [IntelliJ](https://plugins.jetbrains.com/plugin/12129-bloc-code-generator) or [VSCode](https://marketplace.visualstudio.com/items?itemName=FelixAngelov.bloc) extensions, then create `bloc/timer_event.dart` and let’s implement those events.
+もし[IntelliJ](https://plugins.jetbrains.com/plugin/12129-bloc-code-generator)か[VSCode](https://marketplace.visualstudio.com/items?itemName=FelixAngelov.bloc)のエクステンションを使っていない場合は`bloc/timer_event.dart`を作成してください。
+
+Event を定義していきましょう。
 
 ```dart
 import 'package:equatable/equatable.dart';
@@ -176,11 +180,11 @@ class Tick extends TimerEvent {
 }
 ```
 
-Next up, let’s implement the `TimerBloc`!
+次に`TimerBloc`を実装していきましょう！
 
 ### TimerBloc
 
-If you haven’t already, create `bloc/timer_bloc.dart` and create a empty `TimerBloc`.
+もしまだ作っていない場合は`bloc/timer_bloc.dart`を作り、からの`TimerBloc`を作りましょう。
 
 ```dart
 import 'package:bloc/bloc.dart';
@@ -188,18 +192,18 @@ import 'package:flutter_timer/bloc/bloc.dart';
 
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
   @override
-  TimerState get initialState => // TODO: implement initialState;
+  TimerState get initialState => // TODO: 初期 state を作る
 
   @override
   Stream<TimerState> mapEventToState(
     TimerEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    // TODO: EventToState メソッドを定義する
   }
 }
 ```
 
-The first thing we need to do is define the `initialState` of our `TimerBloc`. In this case, we want the `TimerBloc` to start off in the `Ready` state with a preset duration of 1 minute (60 seconds).
+一番最初にするのは`TimerBloc`の`initialState`を定義することです。今回の場合は`TimerBloc`に最初に 1 分間（60 秒間）がセットされた`Ready`state を初期 state として与えましょう。
 
 ```dart
 import 'package:bloc/bloc.dart';
@@ -215,12 +219,12 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   Stream<TimerState> mapEventToState(
     TimerEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    // TODO: EventToState メソッドを定義する
   }
 }
 ```
 
-Next, we need to define the dependency on our `Ticker`.
+次に`Ticker`を引数として受け取れるようにしましょう。
 
 ```dart
 import 'dart:async';
@@ -246,14 +250,14 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   Stream<TimerState> mapEventToState(
     TimerEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    // TODO: EventToState メソッドを定義する
   }
 }
 ```
 
-We are also defining a `StreamSubscription` for our `Ticker` which we will get to in a bit.
+さらに`Ticker`の状態を持っておくために`StreamSubscription`も定義します。
 
-At this point, all that’s left to do is implement `mapEventToState`. For improved readability, I like to break out each event handler into its own helper function. We’ll start with the `Start` event.
+ここまできたらあとは`mapEventToState`を完成させるだけです。可読性を高めるために私は一つ一つの event ハンドラーを別々のヘルパーメソッドに切り分けるのが好きです。まずは`Start` event から作りましょう。
 
 ```dart
 import 'dart:async';
@@ -300,9 +304,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 }
 ```
 
-If the `TimerBloc` receives a `Start` event, it pushes a `Running` state with the start duration. In addition, if there was already an open `_tickerSubscription` we need to cancel it to deallocate the memory. We also need to override the `close` method on our `TimerBloc` so that we can cancel the `_tickerSubscription` when the `TimerBloc` is closed. Lastly, we listen to the `_ticker.tick` stream and on every tick we add a `Tick` event with the remaining duration.
+もし`TimerBloc`が`Start` event を受け取ったら開始時点での時間を入れて`Running` state を返します。さらに、もうすでに`_tickerSubscription`が存在する場合は一度 subscription をキャンセルしメモリーを解放してあげる必要があります。加えて`TimerBloc`が閉じられた時に`_tickerSubscription`を cancel してメモリーを解放できるように`TimerBloc`の`close`メソッドを上書きする必要があります。最後に、`_ticker.tick`にリスナーを貼り、tick （毎秒のカウントダウン）に対してその時点での残り時間を含んだ`Tick` event を発する必要があります。
 
-Next, let’s implement the `Tick` event handler.
+次に`Tick` event ハンドラーを作成しましょう。
 
 ```dart
 import 'dart:async';
@@ -355,9 +359,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 }
 ```
 
-Every time a `Tick` event is received, if the tick’s duration is greater than 0, we need to push an updated `Running` state with the new duration. Otherwise, if the tick’s duration is 0, our timer has ended and we need to push a `Finished` state.
+毎秒`Tick` event を受け取り、もし残り時間が 0 以上なら `Running` state を新しい残り時間を含めて返します。それ以外の場合、つまり残り時間が 0 の場合は`Finished` state を返します。
 
-Now let’s implement the `Pause` event handler.
+それができたら今度は`Pause` event ハンドラーを作りましょう。
 
 ```dart
 import 'dart:async';
@@ -419,9 +423,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 }
 ```
 
-In `_mapPauseToState` if the `state` of our `TimerBloc` is `Running`, then we can pause the `_tickerSubscription` and push a `Paused` state with the current timer duration.
+`_mapPauseToState`の中ではもし`TimerBloc`の`state`が`Running`だったら`_tickerSubscription`を一時停止し、今の時間を含んだ`Paused` state を返します。
 
-Next, let’s implement the `Resume` event handler so that we can unpause the timer.
+次はタイマーを再開できるように`Resume` event ハンドラーを作っていきましょう。
 
 ```dart
 import 'dart:async';
@@ -492,9 +496,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 }
 ```
 
-The `Resume` event handler is very similar to the `Pause` event handler. If the `TimerBloc` has a `state` of `Paused` and it receives a `Resume` event, then it resumes the `_tickerSubscription` and pushes a `Running` state with the current duration.
+`Resume` event ハンドラーは`Pause` event ハンドラーととてもよく似た構造になっています。もし`TimerBloc`の`state`が`Paused`で`Resume` event を受け取ると、一時停止してた`_tickerSubscription`を再開し、その時点での残り時間を含んだ`Running` state を返します。
 
-Lastly, we need to implement the `Reset` event handler.
+最後に`Reset` event ハンドラーを実装しましょう。
 
 ```dart
 import 'dart:async';
@@ -580,23 +584,15 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 }
 ```
 
-If the `TimerBloc` receives a `Reset` event, it needs to cancel the current `_tickerSubscription` so that it isn’t notified of any additional ticks and pushes a `Ready` state with the original duration.
+`TimerBloc`が`Reset` event を受け取ると、残り時間を毎秒返すのをやめるために`_tickerSubscription`を cancel し、最初に設定されていた残り時間を含んだ`Ready` state を返します。
 
-If you didn’t use the [IntelliJ](https://plugins.jetbrains.com/plugin/12129-bloc-code-generator) or [VSCode](https://marketplace.visualstudio.com/items?itemName=FelixAngelov.bloc) extensions be sure to create `bloc/bloc.dart` in order to export all the bloc files and make it possible to use a single import for convenience.
+`TimerBloc`はこれで完成です。今度は UI 関係の実装を行いましょう。
 
-```dart
-export 'timer_bloc.dart';
-export 'timer_event.dart';
-export 'timer_state.dart';
-```
-
-That’s all there is to the `TimerBloc`. Now all that’s left is implement the UI for our Timer Application.
-
-## Application UI
+## アプリの UI
 
 ### MyApp
 
-We can start off by deleting the contents of `main.dart` and creating our `MyApp` widget which will be the root of our application.
+まずは`main.dart`の中身を全部消去し、今回のアプリの大元となる`MyApp`を作りましょう。
 
 ```dart
 import 'package:flutter/material.dart';
@@ -625,13 +621,13 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-`MyApp` is a `StatelessWidget` which will manage initializing and closing an instance of `TimerBloc`. In addition, it’s using the `BlocProvider` widget in order to make our `TimerBloc` instance available to the widgets in our subtree.
+`MyApp`は`StatelessWidget`で、`TimerBloc`の初期化をしています。加えて、`BlocProvider`を使って`TimerBloc`のインスタンスを子孫ウィジェットたちにに渡しています。
 
-Next, we need to implement our `Timer` widget.
+次に`Timer`の実装をしていきましょう。
 
 ### Timer
 
-Our `Timer` widget will be responsible for displaying the remaining time along with the proper buttons which will enable users to start, pause, and reset the timer.
+`Timer`は現在の残り時間を表示するだけでなく、state に合わせて開始、停止、リセットボタンを表示するウィジェットです。
 
 ```dart
 class Timer extends StatelessWidget {
@@ -674,9 +670,9 @@ class Timer extends StatelessWidget {
 }
 ```
 
-So far, we’re just using `BlocProvider` to access the instance of our `TimerBloc` and using a `BlocBuilder` widget in order to rebuild the UI every time we get a new `TimerState`.
+ここまでは`TimerBloc`にアクセスするために`BlocProvider`を使い、`TimerState`の変化に応じて UI を変化させるために`BlocBuilder`を使っています。
 
-Next, we’re going to implement our `Actions` widget which will have the proper actions (start, pause, and reset).
+次に state に合わせて表示するボタンを変える`Actions`ウィジェットを実装します。
 
 ### Actions
 
@@ -742,9 +738,9 @@ class Actions extends StatelessWidget {
 }
 ```
 
-The `Actions` widget is just another `StatelessWidget` which uses `BlocProvider` to access the `TimerBloc` instance and then returns different `FloatingActionButtons` based on the current state of the `TimerBloc`. Each of the `FloatingActionButtons` adds an event in its `onPressed` callback to notify the `TimerBloc`.
+`Actions`ウィジェットは`BlocProvider`を使って`TimerBloc`にアクセスしているだけでなんの変哲も無い`StatelessWidget`ウィジェットです。`TimerBloc`の state に応じて違う種類の`FloatingActionButton`を返してくれます。それぞれの`FloatingActionButton`は`onPressed`のなかに`TimerBloc`に対して event を送っています。
 
-Now we need to hook up the `Actions` to our `Timer` widget.
+次に`Actions`と`Timer`ウィジェットを紐づけていきましょう。
 
 ```dart
 class Timer extends StatelessWidget {
