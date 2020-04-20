@@ -98,17 +98,17 @@ class Post extends Equatable {
 
 ?> `toString`関数を上書きすることで`Post`クラスに独自の String 表示をさせることができます。
 
-?> We extend [`Equatable`](https://pub.dev/packages/equatable) so that we can compare `Posts`; by default, the equality operator returns true if and only if this and other are the same instance.
+?> [`Equatable`](https://pub.dev/packages/equatable)を継承することで`Posts`のプロパティたちが一致するかどうかを検証できます。デフォルトではオブジェクトは同じインスタンスでないと == が true になりません。
 
-Now that we have our `Post` object model, let’s start working on the Business Logic Component (bloc).
+`Post`モデルが完成したので Business Logic Component (bloc) に取り掛かりましょう。
 
-## Post Events
+## Post Event
 
-Before we dive into the implementation, we need to define what our `PostBloc` is going to be doing.
+実装に入る前に`PostBloc`が何をするのかを定義しなくてはなりません。
 
-At a high level, it will be responding to user input (scrolling) and fetching more posts in order for the presentation layer to display them. Let’s start by creating our `Event`.
+ハイレベルなところでは、`PostBloc`はユーザーインプット（スクロール）に対して反応し、追加で post をロードして表示するのが役割です。まずは`Event`を作るところから始めましょう。
 
-Our `PostBloc` will only be responding to a single event; `Fetch` which will be added by the presentation layer whenever it needs more Posts to present. Since our `Fetch` event is a type of `PostEvent` we can create `bloc/post_event.dart` and implement the event like so.
+`PostBloc`は一つの event しか持ちません。`Fetch` event はプレゼンテーションレイヤーがもっと post をロードして欲しいときに呼ばれるでしょう。 `Fetch` event は `PostEvent` の一種なので `bloc/post_event.dart` を作成しこのように実装することができます。
 
 ```dart
 import 'package:equatable/equatable.dart';
@@ -121,7 +121,7 @@ abstract class PostEvent extends Equatable {
 class Fetch extends PostEvent {}
 ```
 
-?> Again, we are overriding `toString` for an easier to read string representation of our event. Again, we are extending [`Equatable`](https://pub.dev/packages/equatable) so that we can compare instances for equality.
+?> 繰り返しになりますが、今回も`toString`を上書きしています。そして、[`Equatable`](https://pub.dev/packages/equatable)を継承し楽に == で二つの post インスタンスを比較できるようにしています。
 
 To recap, our `PostBloc` will be receiving `PostEvents` and converting them to `PostStates`. We have defined all of our `PostEvents` (Fetch) so next let’s define our `PostState`.
 
