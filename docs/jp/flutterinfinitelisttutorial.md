@@ -1,20 +1,20 @@
-# Flutter Infinite List Tutorial
+# Flutter 無限リストチュートリアル
 
 ![intermediate](https://img.shields.io/badge/level-intermediate-orange.svg)
 
-> In this tutorial, we’re going to be implementing an app which fetches data over the network and loads it as a user scrolls using Flutter and the bloc library.
+> このチュートリアルではユーザーがリストをスクロールして下に行くたびにネットワークからデータをロードしてきてリストに追加していくアプリを作成します。
 
 ![demo](../../assets/gifs/flutter_infinite_list.gif)
 
-## Setup
+## 準備
 
-We’ll start off by creating a brand new Flutter project
+まずは新規の Flutter プロジェクトを作成するところから始めましょう。
 
 ```bash
 flutter create flutter_infinite_list
 ```
 
-We can then go ahead and replace the contents of pubspec.yaml with
+pubspec.yaml の中身をこのように書き換えましょう：
 
 ```yaml
 name: flutter_infinite_list
@@ -37,7 +37,7 @@ flutter:
   uses-material-design: true
 ```
 
-and then install all of our dependencies
+それができたらパッケージのインストールをします。
 
 ```bash
 flutter packages get
@@ -45,11 +45,11 @@ flutter packages get
 
 ## REST API
 
-For this demo application, we’ll be using [jsonplaceholder](http://jsonplaceholder.typicode.com) as our data source.
+このアプリでは[jsonplaceholder](http://jsonplaceholder.typicode.com)をデータソースとして使います。
 
-?> jsonplaceholder is an online REST API which serves fake data; it’s very useful for building prototypes.
+?> jsonplaceholder とはオンライン上のデモデータを吐き出してくれる REST API で、プロトタイプを作るときには最適です。
 
-Open a new tab in your browser and visit https://jsonplaceholder.typicode.com/posts?_start=0&_limit=2 to see what the API returns.
+ブラウザで https://jsonplaceholder.typicode.com/posts?_start=0&_limit=2 にアクセスしてみてこの API がどんな値を返してくれるのかをみてみましょう。
 
 ```json
 [
@@ -68,13 +68,13 @@ Open a new tab in your browser and visit https://jsonplaceholder.typicode.com/po
 ]
 ```
 
-?> **Note:** in our url we specified the start and limit as query parameters to the GET request.
+?> **メモ:** 今アクセスした URL では start と limit をクエリーパラメターで指定しました。
 
-Great, now that we know what our data is going to look like, let’s create the model.
+API の返してるデータがどんなものかわかったので、これを元にモデルを作っていきましょう。
 
-## Data Model
+## データモデル
 
-Create `post.dart` and let’s get to work creating the model of our Post object.
+`post.dart`を作成し Post モデルを作りましょう。
 
 ```dart
 import 'package:equatable/equatable.dart';
@@ -94,9 +94,9 @@ class Post extends Equatable {
 }
 ```
 
-`Post` is just a class with an `id`, `title`, and `body`.
+`Post` はただ `id`、`title`、`body`の三つのプロパティがあるだけのクラスです。
 
-?> We override the `toString` function in order to have a custom string representation of our `Post` for later.
+?> `toString`関数を上書きすることで`Post`クラスに独自の String 表示をさせることができます。
 
 ?> We extend [`Equatable`](https://pub.dev/packages/equatable) so that we can compare `Posts`; by default, the equality operator returns true if and only if this and other are the same instance.
 
