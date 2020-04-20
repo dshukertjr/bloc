@@ -123,20 +123,19 @@ class Fetch extends PostEvent {}
 
 ?> 繰り返しになりますが、今回も`toString`を上書きしています。そして、[`Equatable`](https://pub.dev/packages/equatable)を継承し楽に == で二つの post インスタンスを比較できるようにしています。
 
-To recap, our `PostBloc` will be receiving `PostEvents` and converting them to `PostStates`. We have defined all of our `PostEvents` (Fetch) so next let’s define our `PostState`.
+おさらいをすると、`PostBloc`は`PostEvent`を受け取り、それを`PostState`に変換します。ここまでで全ての`PostEvent`は定義し終わりました。次に`PostState`を定義します。
 
-## Post States
+## Post State
 
-Our presentation layer will need to have several pieces of information in order to properly lay itself out:
+このアプリのプレゼンテーションレイヤーがレイアウトを作るためにいくつか送らないといけない情報があります:
 
-- `PostUninitialized`- will tell the presentation layer it needs to render a loading indicator while the initial batch of posts are loaded
+- `PostUninitialized`- プレゼンテーションレイヤーに最初のコンテンツをロードする間ローディングインジケーターを表示することを知らせる
+- `PostLoaded`- プレゼンテーションレイヤーに表示するコンテンツがあることを知らせる
+  - `posts`- `List<Post>`型の表示する投稿一覧
+  - `hasReachedMax`- ロードできる投稿を全てロードし終え、これ以上ロードするコンテンツがないことを知らせる
+- `PostError`- 投稿をロードする最中にエラーが起きたことを知らせる
 
-- `PostLoaded`- will tell the presentation layer it has content to render
-  - `posts`- will be the `List<Post>` which will be displayed
-  - `hasReachedMax`- will tell the presentation layer whether or not it has reached the maximum number of posts
-- `PostError`- will tell the presentation layer that an error has occurred while fetching posts
-
-We can now create `bloc/post_state.dart` and implement it like so.
+これが理解できたら`bloc/post_state.dart`をこのように作っていきましょう。
 
 ```dart
 import 'package:equatable/equatable.dart';
@@ -182,22 +181,15 @@ class PostLoaded extends PostState {
 }
 ```
 
-?> We implemented `copyWith` so that we can copy an instance of `PostLoaded` and update zero or more properties conveniently (this will come in handy later ).
+?> `copyWith`を実装しておくと`PostLoaded`のプロパティいくつか簡単に変化させることができます（あとで役に立つ時がきます）。
 
-Now that we have our `Events` and `States` implemented, we can create our `PostBloc`.
-
-To make it convenient to import our states and events with a single import we can create `bloc/bloc.dart` which exports them all (we'll add our `post_bloc.dart` export in the next section).
-
-```dart
-export './post_event.dart';
-export './post_state.dart';
-```
+`Event`と`State`が実装できたらあとは`PostBloc`を作りましょう。
 
 ## Post Bloc
 
-For simplicity, our `PostBloc` will have a direct dependency on an `http client`; however, in a production application you might want instead inject an api client and use the repository pattern [docs](./architecture.md).
+シンプルに作るために今回は`PostBloc`から`http client`を呼び出しますが、実際にプロダクションレベルのアプリを作る際にはレポジトリーパターンなどを使うようにすることをお勧めします[ドキュメント](jp/architecture.md)。
 
-Let’s create `post_bloc.dart` and create our empty `PostBloc`.
+`post_bloc.dart`を作成し空の`PostBloc`を作りましょう。
 
 ```dart
 import 'package:bloc/bloc.dart';
@@ -213,27 +205,27 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({@required this.httpClient});
 
   @override
-  // TODO: implement initialState
+  // TODO: 初期 state を定義する
   PostState get initialState => null;
 
   @override
   Stream<PostState> mapEventToState(PostEvent event) async* {
-    // TODO: implement mapEventToState
+    // TODO: mapEventToState を定義する
     yield null;
   }
 }
 ```
 
-?> **Note:** just from the class declaration we can tell that our PostBloc will be taking PostEvents as input and outputting PostStates.
+?> **メモ:** クラスの定義を見ただけで PostBloc は PostEvent を受け取り PostState を返してくれることがわかります。
 
-We can start by implementing `initialState` which will be the state of our `PostBloc` before any events have been added.
+まずなんの stete もロードされる前の`PostBloc`の state になる`initialState`を定義するところから始めましょう。
 
 ```dart
 @override
 get initialState => PostUninitialized();
 ```
 
-Next, we need to implement `mapEventToState` which will be fired every time a `PostEvent` is added.
+次に`PostEvent`が追加されるたびに呼ばれる`mapEventToState`を定義しましょう。
 
 ```dart
 @override
