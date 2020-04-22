@@ -275,19 +275,19 @@ Future<List<Post>> _fetchPosts(int startIndex, int limit) async {
 }
 ```
 
-Our `PostBloc` will `yield` whenever there is a new state because it returns a `Stream<PostState>`. Check out [core concepts](https://bloclibrary.dev/#/coreconcepts?id=streams) for more information about `Streams` and other core concepts.
+`PostBloc`は`Stream<PostState>`を返すので新しい state を返すたびに`yield`します。`Streams`や他のコアなコンセプトについては[core concepts](https://bloclibrary.dev/#/coreconcepts?id=streams)を確認しましょう。
 
-Now every time a `PostEvent` is added, if it is a `Fetch` event and there are more posts to fetch, our `PostBloc` will fetch the next 20 posts.
+これで`PostEvent`が追加され、それが`Fetch`であり、まだロードする投稿がある場合は`PostBloc`は次の 20 件をロードします。
 
-The API will return an empty array if we try to fetch beyond the maximum number of posts (100), so if we get back an empty array, our bloc will `yield` the currentState except we will set `hasReachedMax` to true.
+今回使っている API は用意されているデータ数（100 件）を超えてデータをロードしようとすると空の配列を返すようになっているので、もしからの配列を受け取った場合は`hasReachedMax`を true にして`yield`します。
 
-If we cannot retrieve the posts, we throw an exception and `yield` `PostError()`.
+もし、投稿をロードする際にエラーが発生したら`PostError()`を`yield`します。
 
-If we can retrieve the posts, we return `PostLoaded()` which takes the entire list of posts.
+もし、投稿が取得できたら投稿が全て含まれている`PostLoaded()`を返します。
 
-One optimization we can make is to `debounce` the `Events` in order to prevent spamming our API unnecessarily. We can do this by overriding the `transform` method in our `PostBloc`.
+一つ改善の余地があるならば、`Event`が API を必要以上に何回も呼ばないように`debounce`するようにすることでしょう。これは`PostBloc`の`transform`メソッドを上書きすることでできます。
 
-?> **Note:** Overriding transform allows us to transform the Stream<Event> before mapEventToState is called. This allows for operations like distinct(), debounceTime(), etc... to be applied.
+?> **メモ:** Transform を上書きすることで mapEventToState が呼ばれる前に Stream<Event> を返還することができます。これにより distinct()や debounceTime()などの処理をかけることができるようになります。
 
 ```dart
 @override
@@ -302,7 +302,7 @@ Stream<Transition<PostEvent, PostState>> transformEvents(
 }
 ```
 
-Our finished `PostBloc` should now look like this:
+完成した`PostBloc`はこのようになっているはずです:
 
 ```dart
 import 'dart:async';
@@ -381,21 +381,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 }
 ```
 
-Don't forget to update `bloc/bloc.dart` to include our `PostBloc`!
+完璧です！ビジネスロジックが実装し終わったのであとはプレゼンテーションレイヤーを作って終わります。
 
-```dart
-export './post_bloc.dart';
-export './post_event.dart';
-export './post_state.dart';
-```
+## プレゼンテーションレイヤー
 
-Great! Now that we’ve finished implementing the business logic all that’s left to do is implement the presentation layer.
-
-## Presentation Layer
-
-In our `main.dart` we can start by implementing our main function and calling `runApp` to render our root widget.
-
-In our `App` widget, we use `BlocProvider` to create and provide an instance of `PostBloc` to the subtree. Also, we add a `Fetch` event so that when the app loads, it requests the initial batch of Posts.
+`App`ウィジェットの中で`PostBloc`のインスタンスを子孫要素に渡すために`BlocProvider`を使います。加えて、最初の投稿データを引っ張ってきてくれるように`Fetch` event を渡しておきます。
 
 ```dart
 import 'package:flutter/material.dart';
