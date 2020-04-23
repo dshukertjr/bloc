@@ -418,7 +418,7 @@ class App extends StatelessWidget {
 }
 ```
 
-Next, we need to implement our `HomePage` widget which will present our posts and hook up to our `PostBloc`.
+次に`HomePage`ウィジェットを作り、`PostBloc`を紐づけます。
 
 ```dart
 class HomePage extends StatefulWidget {
@@ -490,15 +490,15 @@ class _HomePageState extends State<HomePage> {
 }
 ```
 
-?> `HomePage` is a `StatefulWidget` because it will need to maintain a `ScrollController`. In `initState`, we add a listener to our `ScrollController` so that we can respond to scroll events. We also access our `PostBloc` instance via `BlocProvider.of<PostBloc>(context)`.
+?> `HomePage`は`ScrollController`を持たないといけないので`StatefulWidget`を継承させます。`initState`の中でユーザーが画面をスクロールすることに対してコードを実行できるように`ScrollController`にリスナーを貼ります。さらに、`BlocProvider.of<PostBloc>(context)`を使って`PostBloc`インスタンスにアクセスします。
 
-Moving along, our build method returns a `BlocBuilder`. `BlocBuilder` is a Flutter widget from the [flutter_bloc package](https://pub.dev/packages/flutter_bloc) which handles building a widget in response to new bloc states. Any time our `PostBloc` state changes, our builder function will be called with the new `PostState`.
+build メソッドの中では`BlocBuilder`を使っています。`BlocBuilder`は[flutter_bloc package](https://pub.dev/packages/flutter_bloc)の中のウィジェットで、state に合わせて UI を変更することができます。`PostBloc`の state が変わるたびに builder 関数が新しい`PostState`で呼ばれます。
 
-!> We need to remember to clean up after ourselves and dispose of our `ScrollController` when the StatefulWidget is disposed.
+!> 忘れてはならないのが、StatefulWidget が dispose されるときに`ScrollController`も dispose することです。
 
-Whenever the user scrolls, we calculate how far away from the bottom of the page they are and if the distance is ≤ our `_scrollThreshold` we add a `Fetch` event in order to load more posts.
+ユーザーが画面をスクロールするたびに画面の下から今のポジション前の距離を計算し、それが`_scrollThreshold`以下であれば `Fetch` event を送り追加で投稿をロードします。
 
-Next, we need to implement our `BottomLoader` widget which will indicate to the user that we are loading more posts.
+次に、ユーザーに現在投稿をロード中であることを知らせる`BottomLoader`ウィジェットを作成します。
 
 ```dart
 class BottomLoader extends StatelessWidget {
@@ -520,7 +520,7 @@ class BottomLoader extends StatelessWidget {
 }
 ```
 
-Lastly, we need to implement our `PostWidget` which will render an individual Post.
+最後に、一つ一つの投稿を描画する`PostWidget`ウィジェットを実装します。
 
 ```dart
 class PostWidget extends StatelessWidget {
@@ -544,17 +544,17 @@ class PostWidget extends StatelessWidget {
 }
 ```
 
-At this point, we should be able to run our app and everything should work; however, there’s one more thing we can do.
+ここまできたら、アプリを実行すると全てうまく動くはずです。ただ、もう一つやるべきことがあります。
 
-One added bonus of using the bloc library is that we can have access to all `Transitions` in one place.
+一つ Bloc ライブラリーを使うことでついてくるおまけが、一箇所で全ての`Transition`にアクセスできるということです。
 
-> The change from one state to another is called a `Transition`.
+> 1 つの state から別の state に変化することを`Transition`と呼びます。
 
-?> A `Transition` consists of the current state, the event, and the next state.
+?> `Transition`には今の state, 呼ばれた event, そして次の state が含まれます。
 
-Even though in this application we only have one bloc, it's fairly common in larger applications to have many blocs managing different parts of the application's state.
+今回作成したアプリでは 1 つの bloc しか使いませんでしたが、一般的なアプリでは複数の bloc を使いアプリの様々な状態を管理することがよくあります。
 
-If we want to be able to do something in response to all `Transitions` we can simply create our own `BlocDelegate`.
+もし、全ての`Transitions`に対して何かを実行したい時は`BlocDelegate`を作成します。
 
 ```dart
 import 'package:bloc/bloc.dart';
@@ -568,9 +568,9 @@ class SimpleBlocDelegate extends BlocDelegate {
 }
 ```
 
-?> All we need to do is extend `BlocDelegate` and override the `onTransition` method.
+?> やることはただ`BlocDelegate`を継承し`onTransition`メソッドを上書きするだけです。
 
-In order to tell Bloc to use our `SimpleBlocDelegate`, we just need to tweak our main function.
+作成した Bloc に`SimpleBlocDelegate`を使用するようにするには main 関数を書き換えます。
 
 ```dart
 void main() {
@@ -579,12 +579,12 @@ void main() {
 }
 ```
 
-Now when we run our application, every time a Bloc `Transition` occurs we can see the transition printed to the console.
+これでこのアプリの中の Bloc が新しい`Transition` を発するたびにコンソールにその旨を print できます。
 
-?> In practice, you can create different `BlocDelegates` and because every state change is recorded, we are able to very easily instrument our applications and track all user interactions and state changes in one place!
+?> 実際のアプリではただコンソールに print するだけでなく、アナリティクスツールなどにイベントを記録するために使います。
 
-That’s all there is to it! We’ve now successfully implemented an infinite list in flutter using the [bloc](https://pub.dev/packages/bloc) and [flutter_bloc](https://pub.dev/packages/flutter_bloc) packages and we’ve successfully separated our presentation layer from our business logic.
+これで終わりです！Flutter と[flutter_bloc](https://pub.dev/packages/flutter_bloc)を使ってプレゼンテーションレイヤーと Business Logic が綺麗に分かれた無限リストを表示するアプリを作ることができました。
 
-Our `HomePage` has no idea where the `Posts` are coming from or how they are being retrieved. Conversely, our `PostBloc` has no idea how the `State` is being rendered, it simply converts events into states.
+`HomePage`はどこからどうやって`Posts`がやってきているのかを知る由もありません。同じように`PostBloc`はどこでどのように`State`が使われているかを知る由もありません。ただ event を state に変換しているだけです。
 
-The full source for this example can be found [here](https://github.com/felangel/Bloc/tree/master/examples/flutter_infinite_list).
+このアプリのソースコードは[こちら](https://github.com/felangel/Bloc/tree/master/examples/flutter_infinite_list)から見ることができます。
