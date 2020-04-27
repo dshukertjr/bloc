@@ -103,7 +103,7 @@ class UserRepository {
 
 > 詳細な実装に入って行く前に bloc がどのような state を持つことができるのかを整理しておくことはとても重要です。
 
-Now that we have our authentication states identified, we can implement our `AuthenticationState` class.
+Authentication state 一覧ができたので`AuthenticationState`クラスの実装に入っていきましょう。
 
 ```dart
 import 'package:equatable/equatable.dart';
@@ -122,17 +122,17 @@ class AuthenticationUnauthenticated extends AuthenticationState {}
 class AuthenticationLoading extends AuthenticationState {}
 ```
 
-?> **Note**: The [`equatable`](https://pub.dev/packages/equatable) package is used in order to be able to compare two instances of `AuthenticationState`. By default, `==` returns true only if the two objects are the same instance.
+?> **メモ**: [`Equatable`](https://pub.dev/packages/equatable)パッケージは二つの`AuthenticationState`を比較するために使用しています。Dart はデフォルトでは二つの Object を`==`で比較すると二つのインスタンつが同一の場合のみ true を返します。
 
-## Authentication Events
+## Authentication Event
 
-Now that we have our `AuthenticationState` defined we need to define the `AuthenticationEvents` which our `AuthenticationBloc` will be reacting to.
+`AuthenticationState`が実装できたら次は`AuthenticationBloc`に情報を送る`AuthenticationEvent`を実装していきましょう。
 
-We will need:
+必要な event は:
 
-- an `AppStarted` event to notify the bloc that it needs to check if the user is currently authenticated or not.
-- a `LoggedIn` event to notify the bloc that the user has successfully logged in.
-- a `LoggedOut` event to notify the bloc that the user has successfully logged out.
+- `AppStarted` アプリの開始時に呼ばれ、ユーザーのログイン状態をチェックさせるための event
+- `LoggedIn` ユーザーが無事ログインできたことを知らせる event
+- `LoggedOut` ユーザーがログアウトしたことを知らせる event
 
 ```dart
 import 'package:meta/meta.dart';
@@ -162,13 +162,13 @@ class LoggedIn extends AuthenticationEvent {
 class LoggedOut extends AuthenticationEvent {}
 ```
 
-?> **Note**: the `meta` package is used to annotate the `AuthenticationEvent` parameters as `@required`. This will cause the dart analyzer to warn developers if they don't provide the required parameters.
+?> **メモ**: `meta`パッケージは`AuthenticationEvent`のパラメーターを`@required`にするために必要です。これにより必須パラメーターをインスタンスに渡さなかった場合に IDE が警告してくれるようになります。
 
 ## Authentication Bloc
 
-Now that we have our `AuthenticationState` and `AuthenticationEvents` defined, we can get to work on implementing the `AuthenticationBloc` which is going to manage checking and updating a user's `AuthenticationState` in response to `AuthenticationEvents`.
+`AuthenticationState`と`AuthenticationEvents`が実装できたのでここからは`AuthenticationBloc`を作っていきましょう。`AuthenticationBloc`は`AuthenticationEvents`を受け取り必要な処理をしてから`AuthenticationState`を返してくれます。
 
-We'll start off by creating our `AuthenticationBloc` class.
+まずは`AuthenticationBloc`クラスを作りましょう。
 
 ```dart
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
@@ -178,7 +178,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 }
 ```
 
-?> **Note**: Just from reading the class definition, we already know this bloc is going to be converting `AuthenticationEvents` into `AuthenticationStates`.
+?> **メモ**: Just from reading the class definition, we already know this bloc is going to be converting `AuthenticationEvents` into `AuthenticationStates`.
 
 ?> **Note**: Our `AuthenticationBloc` has a dependency on the `UserRepository`.
 
