@@ -1,20 +1,20 @@
-# Flutter Login Tutorial
+# Flutter ログインチュートリアル
 
 ![intermediate](https://img.shields.io/badge/level-intermediate-orange.svg)
 
-> In the following tutorial, we're going to build a Login Flow in Flutter using the Bloc library.
+> 今回のチュートリアルでは Flutter と Bloc ライブラリーを使ってログインフローを作っていきます。
 
 ![demo](../../assets/gifs/flutter_login.gif)
 
-## Setup
+## 準備
 
-We'll start off by creating a brand new Flutter project
+まずは新規の Flutter プロジェクトを作りましょう。
 
 ```bash
 flutter create flutter_login
 ```
 
-We can then go ahead and replace the contents of `pubspec.yaml` with
+それができたら`pubspec.yaml`の中身を下記の通り書き換えましょう。
 
 ```yaml
 name: flutter_login
@@ -39,15 +39,15 @@ flutter:
   uses-material-design: true
 ```
 
-and then install all of our dependencies
+そしてこれらをインストールしましょう
 
 ```bash
 flutter packages get
 ```
 
-## User Repository
+## User レポジトリー
 
-We're going to need to create a `UserRepository` which helps us manage a user's data.
+まずはユーザーデータを管理する`UserRepository`を作りましょう。
 
 ```dart
 class UserRepository {
@@ -60,48 +60,48 @@ class UserRepository {
   }
 
   Future<void> deleteToken() async {
-    /// delete from keystore/keychain
+    /// keystore/keychainから削除
     await Future.delayed(Duration(seconds: 1));
     return;
   }
 
   Future<void> persistToken(String token) async {
-    /// write to keystore/keychain
+    /// keystore/keychainに追加
     await Future.delayed(Duration(seconds: 1));
     return;
   }
 
   Future<bool> hasToken() async {
-    /// read from keystore/keychain
+    /// keystore/keychainから読み込み
     await Future.delayed(Duration(seconds: 1));
     return false;
   }
 }
 ```
 
-?> **Note**: Our user repository is just mocking all of the different implementations for the sake of simplicity but in a real application you might inject a [HttpClient](https://pub.dev/packages/http) as well as something like [Flutter Secure Storage](https://pub.dev/packages/flutter_secure_storage) in order to request tokens and read/write them to keystore/keychain.
+?> **メモ**: 今回のアプリはそれぞれの実装をモック的に作っていますが、実際は[HttpClient](https://pub.dev/packages/http)や[Flutter Secure Storage](https://pub.dev/packages/flutter_secure_storage)を使ってトークンをリクエストした上で keystore/keychain に読み書きするのが一般的です。
 
-## Authentication States
+## Authentication State
 
-Next, we’re going to need to determine how we’re going to manage the state of our application and create the necessary blocs (business logic components).
+次に今回のアプリの state をどのように管理していくかを考えつつ bloc (business logic components)を作っていきましょう。
 
-At a high level, we’re going to need to manage the user’s Authentication State. A user's authentication state can be one of the following:
+ハイレベルなところでユーザーの Authenticatoin state を管理する必要があります。Authentication state は以下のどれかになります：
 
-- uninitialized - waiting to see if the user is authenticated or not on app start.
-- loading - waiting to persist/delete a token
-- authenticated - successfully authenticated
-- unauthenticated - not authenticated
+- uninitialized - アプリを立ち上げた直後でまだユーザーのログイン状態が不明な状態
+- loading - トークンの読み書きをしている最中
+- authenticated - ログイン成功
+- unauthenticated - ログインされていない
 
-Each of these states will have an implication on what the user sees.
+これらの state それぞれに対応しているアプリがユーザーに見せるべきものがあります。
 
-For example:
+例えば:
 
-- if the authentication state was uninitialized, the user might be seeing a splash screen.
-- if the authentication state was loading, the user might be seeing a progress indicator.
-- if the authentication state was authenticated, the user might see a home screen.
-- if the authentication state was unauthenticated, the user might see a login form.
+- もし state が uninitialized ならユーザーにはスプラッシュスクリーンを見せます
+- もし state が loading ならユーザーには progress indicator を見せます
+- もし state が authenticated ならユーザーにはホーム画面を見せます
+- もし state が unauthenticated ならユーザーにはログインフォームを見せます
 
-> It's critical to identify what the different states are going to be before diving into the implementation.
+> 詳細な実装に入って行く前に bloc がどのような state を持つことができるのかを整理しておくことはとても重要です。
 
 Now that we have our authentication states identified, we can implement our `AuthenticationState` class.
 
