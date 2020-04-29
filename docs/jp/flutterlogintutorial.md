@@ -178,9 +178,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 }
 ```
 
-?> **メモ**: Just from reading the class definition, we already know this bloc is going to be converting `AuthenticationEvents` into `AuthenticationStates`.
+?> **メモ**: 上記の定義を見ただけでこの bloc は`AuthenticationEvents`を`AuthenticationStates`に変換していることがわかりますね。
 
-?> **Note**: Our `AuthenticationBloc` has a dependency on the `UserRepository`.
+?> **メモ**: `AuthenticationBloc`は`UserRepository`に依存しています。
 
 We can start by overriding `initialState` to the `AuthenticationUninitialized()` state.
 
@@ -189,7 +189,7 @@ We can start by overriding `initialState` to the `AuthenticationUninitialized()`
 AuthenticationState get initialState => AuthenticationUninitialized();
 ```
 
-Now all that's left is to implement `mapEventToState`.
+これが完了したら`mapEventToState`を実装しましょう。
 
 ```dart
 @override
@@ -220,7 +220,7 @@ Stream<AuthenticationState> mapEventToState(
 }
 ```
 
-Great! Our final `AuthenticationBloc` should look like
+やりましたね！最終的な`AuthenticationBloc`はこのようになっているはずです
 
 ```dart
 import 'dart:async';
@@ -270,11 +270,11 @@ class AuthenticationBloc
 }
 ```
 
-Now that we have our `AuthenticationBloc` fully implemented, let’s get to work on the presentational layer.
+これで`AuthenticationBloc`の実装が完了しました。次はプレゼンテーションレイヤーに取り掛かっていきましょう。
 
-## Splash Page
+## スプラッシュ画面
 
-The first thing we’ll need is a `SplashPage` widget which will serve as our Splash Screen while our `AuthenticationBloc` determines whether or not a user is logged in.
+プレゼンテーションレイヤーで最初に作るのは`SplashPage`です。`SplashPage`は`AuthenticationBloc`ユーザーのログイン状態を確認している最中に表示されるウィジェットになります。
 
 ```dart
 import 'package:flutter/material.dart';
@@ -291,9 +291,9 @@ class SplashPage extends StatelessWidget {
 }
 ```
 
-## Home Page
+## ホーム画面
 
-Next, we will need to create our `HomePage` so that we can navigate users there once they have successfully logged in.
+次に無事ログインをすることができたユーザーを送る`HomePage`を作りましょう。
 
 ```dart
 import 'package:flutter/material.dart';
@@ -323,7 +323,7 @@ class HomePage extends StatelessWidget {
 }
 ```
 
-?> **Note**: This is the first class in which we are using `flutter_bloc`. We will get into `BlocProvider.of<AuthenticationBloc>(context)` shortly but for now just know that it allows our `HomePage` to access our `AuthenticationBloc`.
+?> **メモ**: ここで初めて`flutter_bloc`を使ったウィジェットが出てきました。後ほど`BlocProvider.of<AuthenticationBloc>(context)`については解説しますが、`HomePage`から`AuthenticationBloc`にアクセスするために必要だということだけ覚えていてください。
 
 ?> **Note**: We are adding a `LoggedOut` event to our `AuthenticationBloc` when a user pressed the logout button.
 
