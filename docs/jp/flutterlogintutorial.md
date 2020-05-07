@@ -325,15 +325,15 @@ class HomePage extends StatelessWidget {
 
 ?> **メモ**: ここで初めて`flutter_bloc`を使ったウィジェットが出てきました。後ほど`BlocProvider.of<AuthenticationBloc>(context)`については解説しますが、`HomePage`から`AuthenticationBloc`にアクセスするために必要だということだけ覚えていてください。
 
-?> **Note**: We are adding a `LoggedOut` event to our `AuthenticationBloc` when a user pressed the logout button.
+?> **メモ**: ユーザーがログアウトボタンを押した時には`LoggedOut` event を `AuthenticationBloc` に送ります。
 
-Next up, we need to create a `LoginPage` and `LoginForm`.
+次に`LoginPage`と`LoginForm`を作ります。
 
-Because the `LoginForm` will have to handle user input (Login Button Pressed) and will need to have some business logic (getting a token for a given username/password), we will need to create a `LoginBloc`.
+`LoginForm`はユーザーからのインプット(ログインボタンが押されるなど)や、ビジネスロジック(ユーザー名とパスワードに対応するトークンを取得する)を処理する必要があるため、`LoginBloc`を作る必要があります。
 
-Just like we did for the `AuthenticationBloc`, we will need to define the `LoginState`, and `LoginEvents`. Let’s start with `LoginState`.
+`AuthenticationBloc`でも行ったように`LoginState`と`LoginEvents`を定義していきましょう。まずは`LoginState`からです。
 
-## Login States
+## Login State
 
 ```dart
 import 'package:meta/meta.dart';
@@ -363,15 +363,15 @@ class LoginFailure extends LoginState {
 }
 ```
 
-`LoginInitial` is the initial state of the LoginForm.
+`LoginInitial`は LoginForm の初期状態です。
 
-`LoginLoading` is the state of the LoginForm when we are validating credentials
+`LoginLoading`はログイン情報を認証しているときの状態です。
 
-`LoginFailure` is the state of the LoginForm when a login attempt has failed.
+`LoginFailure`はログインが失敗したときの状態です。
 
-Now that we have the `LoginState` defined let’s take a look at the `LoginEvent` class.
+`LoginState`が揃ったら今度は`LoginEvent`クラスを作っていきましょう。
 
-## Login Events
+## Login Event
 
 ```dart
 import 'package:meta/meta.dart';
@@ -399,9 +399,9 @@ class LoginButtonPressed extends LoginEvent {
 }
 ```
 
-`LoginButtonPressed` will be added when a user pressed the login button. It will notify the `LoginBloc` that it needs to request a token for the given credentials.
+`LoginButtonPressed`はユーザーがログインボタンをタップした時のイベントです。`LoginBloc`に対してユーザーのログイン情報に対応したトークンをリクエストするように指示します。
 
-We can now implement our `LoginBloc`.
+これで`LoginBloc`の実装に入れます。
 
 ## Login Bloc
 
@@ -448,9 +448,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 }
 ```
 
-?> **Note**: `LoginBloc` has a dependency on `UserRepository` in order to authenticate a user given a username and password.
+?> **メモ**: `LoginBloc`は`UserRepository`にユーザーをログインするためのロジックを依存しています。
 
-?> **Note**: `LoginBloc` has a dependency on `AuthenticationBloc` in order to update the AuthenticationState when a user has entered valid credentials.
+?> **メモ**: `LoginBloc` has a dependency on `AuthenticationBloc` in order to update the AuthenticationState when a user has entered valid credentials.
 
 Now that we have our `LoginBloc` we can start working on `LoginPage` and `LoginForm`.
 
