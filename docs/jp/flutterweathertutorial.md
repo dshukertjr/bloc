@@ -1,8 +1,8 @@
-# Flutter Weather Tutorial
+# Flutter 天気アプリチュートリアル
 
 ![advanced](https://img.shields.io/badge/level-advanced-red.svg)
 
-> In the following tutorial, we're going to build a Weather app in Flutter which demonstrates how to manage multiple blocs to implement dynamic theming, pull-to-refresh, and much more. Our weather app will pull real data from an API and demonstrate how to separate our application into three layers (data, business logic, and presentation).
+> このチュートリアルでは Flutter を使って天気を確認するアプリを作ります。このアプリでは複数の Bloc を使い動的にテーマを変更する、コンテンツの更新などを実装します。このチュートリアルでは実際に存在する API を使ってデータレイヤー、ビジネスロジックレイヤー、プレゼンテーションレイヤーが分かれたアプリを作ります。
 
 ![demo](../assets/gifs/flutter_weather.gif)
 
@@ -23,7 +23,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   flutter:
