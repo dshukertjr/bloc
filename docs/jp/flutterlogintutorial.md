@@ -450,13 +450,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
 ?> **メモ**: `LoginBloc`は`UserRepository`にユーザーをログインするためのロジックを依存しています。
 
-?> **メモ**: `LoginBloc` has a dependency on `AuthenticationBloc` in order to update the AuthenticationState when a user has entered valid credentials.
+?> **メモ**: `LoginBloc`はユーザー情報を元にユーザーをログインさせられるように`AuthenticationBloc`に依存しています。
 
-Now that we have our `LoginBloc` we can start working on `LoginPage` and `LoginForm`.
+`LoginBloc`が完成したらあとは`LoginPage`と`LoginForm`に取り掛かりましょう。
 
 ## Login Page
 
-The `LoginPage` widget will serve as our container widget and will provide the necessary dependencies to the `LoginForm` widget (`LoginBloc` and `AuthenticationBloc`).
+`LoginPage`ウィジェットは`LoginForm`のラッパーとなり`LoginBloc`と`AuthenticationBloc`を`LoginForm`に渡してくれます。
 
 ```dart
 import 'package:flutter/material.dart';
@@ -494,13 +494,13 @@ class LoginPage extends StatelessWidget {
 }
 ```
 
-?> **Note**: `LoginPage` is a `StatelessWidget`. The `LoginPage` widget uses the `BlocProvider` widget to create, close, and provide the `LoginBloc` to the sub-tree.
+?> **メモ**: `LoginPage`は`StatelessWidget`です。`LoginPage`は`BlocProvider`を使って子孫ウィジェットに`LoginBloc`を渡しています。
 
-?> **Note**: We are using the injected `UserRepository` in order to create our `LoginBloc`.
+?> **メモ**: `LoginBloc`を作る時に`UserRepository`を渡しています。
 
-?> **Note**: We are using `BlocProvider.of<AuthenticationBloc>(context)` again in order to access the `AuthenticationBloc` from the `LoginPage`.
+?> **メモ**: ここでは`BlocProvider.of<AuthenticationBloc>(context)`という記法を使って`LoginPage`から`AuthenticationBloc`にアクセスします。
 
-Next up, let’s go ahead and create our `LoginForm`.
+次は`LoginForm`を作っていきましょう。
 
 ## Login Form
 
@@ -574,11 +574,12 @@ class _LoginFormState extends State<LoginForm> {
 }
 ```
 
-?> **Note**: Our `LoginForm` uses the `BlocBuilder` widget so that it can rebuild whenever there is a new `LoginState`. `BlocBuilder` is a Flutter widget which requires a Bloc and a builder function. `BlocBuilder` handles building the widget in response to new states. `BlocBuilder` is very similar to `StreamBuilder` but has a more simple API to reduce the amount of boilerplate code needed and various performance optimizations.
+?> **メモ**: `LoginForm`は内部で`BlocBuilder`を使って`LoginState`が変更されるごとに UI を再描画します。`BlocBuilder`は Flutter のウィジェットで
+、builder メソッドに定義した通りに state が変わるごとに UI を再描画してくれます。`BlocBuilder`は`StreamBuilder`に似ていますが、よりシンプルに使えて、様々なパフォーマンス改善用の機能も用意されています。
 
-There’s not much else going on in the `LoginForm` widget so let's move on to creating our loading indicator.
+現段階では`LoginForm`には大して何も実装されていないので、ローディング中あることを示すローディングインジケーターウィジェットを実装してみましょう。
 
-## Loading Indicator
+## ローディングインジケーター
 
 ```dart
 import 'package:flutter/material.dart';
@@ -591,9 +592,9 @@ class LoadingIndicator extends StatelessWidget {
 }
 ```
 
-Now it’s finally time to put it all together and create our main App widget in `main.dart`.
+最後に`main.dart`内で今まで作ってきたものを全て組み合わせましょう。
 
-## Putting it all together
+## 組み立て
 
 ```dart
 import 'package:flutter/material.dart';
@@ -671,14 +672,14 @@ class App extends StatelessWidget {
 }
 ```
 
-?> **Note**: Again, we are using `BlocBuilder` in order to react to changes in `AuthenticationState` so that we can show the user either the `SplashPage`, `LoginPage`, `HomePage`, or `LoadingIndicator` based on the current `AuthenticationState`.
+?> **メモ**: ここでは再び`BlocBuilder`を使って`AuthenticationState`が変わるたびに`SplashPage`, `LoginPage`, `HomePage`, `LoadingIndicator` のの表示の出し分けを行なっています。
 
-?> **Note**: Our app is wrapped in a `BlocProvider` which makes our instance of `AuthenticationBloc` available to the entire widget subtree. `BlocProvider` is a Flutter widget which provides a bloc to its children via `BlocProvider.of(context)`. It is used as a dependency injection (DI) widget so that a single instance of a bloc can be provided to multiple widgets within a subtree.
+?> **メモ**: 今回のアプリはアプリ全体が`BlocProvider`で包まれていて、`AuthenticationBloc`がアプリのどこからでもアクセスできるようになっています。おさらいになりますが、`BlocProvider`は子孫要素のどこからでも`BlocProvider.of(context)`という記法を使って Bloc にアクセスできるようにするウィジェットです。こうすることで一つ Bloc インスタンスを全ての子孫要素で共有することができます。
 
-Now `BlocProvider.of<AuthenticationBloc>(context)` in our `HomePage` and `LoginPage` widget should make sense.
+これで`BlocProvider.of<AuthenticationBloc>(context)`が`HomePage`や`LoginPage`に書かれている理由がわかったのではないでしょうか？
 
-Since we wrapped our `App` within a `BlocProvider<AuthenticationBloc>` we can access the instance of our `AuthenticationBloc` by using the `BlocProvider.of<AuthenticationBloc>(BuildContext context)` static method from anywhere in the subtree.
+`App`を`BlocProvider<AuthenticationBloc>`で囲ったので`AuthenticationBloc`のインスタンスへは`BlocProvider.of<AuthenticationBloc>(BuildContext context)`を使うことで子孫要素のどこからでも呼ぶことができます。
 
-At this point we have a pretty solid login implementation and we have decoupled our presentation layer from the business logic layer by using Bloc.
+ここまでくればロジックと UI が綺麗に分かれたアプリを Bloc を使って作ることができたと言えるでしょう。
 
-The full source for this example can be found [here](https://github.com/felangel/Bloc/tree/master/examples/flutter_login).
+コードを全部見たい方は[こちら](https://github.com/felangel/Bloc/tree/master/examples/flutter_login)から見れます。
