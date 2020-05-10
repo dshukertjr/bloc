@@ -6,15 +6,15 @@
 
 ![demo](../assets/gifs/flutter_weather.gif)
 
-## Setup
+## 準備
 
-We’ll start off by creating a brand new Flutter project
+まずは新規の Flutter プロジェクトを立ち上げましょう。
 
 ```bash
 flutter create flutter_weather
 ```
 
-We can then go ahead and replace the contents of pubspec.yaml with
+それができたら pubspec.yaml の中身を下記のように書き換えます。
 
 ```yaml
 name: flutter_weather
@@ -43,9 +43,9 @@ flutter:
     - assets/
 ```
 
-?> **Note:** We are going to add some assets (icons for weather types) in our app, so we need to include the assets folder in the pubspec.yaml. Please go ahead and create an _assets_ folder in the root of the project.
+?> **メモ:** ここではアセット（アプリ内に表示するアイコンなど）を追加する準備をしています。プロジェクト内でも _assets_ フォルダーを作成してください。
 
-and then install all of our dependencies
+それができたらパッケージをインストールしましょう
 
 ```bash
 flutter packages get
@@ -53,14 +53,14 @@ flutter packages get
 
 ## REST API
 
-For this application we'll be hitting the [metaweather API](https://www.metaweather.com).
+このアプリでは[metaweather API](https://www.metaweather.com)を使用します。
 
-We'll be focusing on two endpoints:
+その中でもこれらのエンドポイントを使用いたします：
 
-- `/api/location/search/?query=$city` to get a locationId for a given city name
-- `/api/location/$locationId` to get the weather for a given locationId
+- `/api/location/search/?query=$city` 特定の年の locationId を取得するエンドポイント
+- `/api/location/$locationId` 特定の locationId の天気を取得するエンドポイント
 
-Open [https://www.metaweather.com/api/location/search/?query=london](https://www.metaweather.com/api/location/search/?query=london) in your browser and you'll see the following response
+こちらの[https://www.metaweather.com/api/location/search/?query=london](https://www.metaweather.com/api/location/search/?query=london) リンクをブラウザで開くと下のようなリスポンスが帰ってくると思います
 
 ```json
 [
@@ -73,9 +73,9 @@ Open [https://www.metaweather.com/api/location/search/?query=london](https://www
 ]
 ```
 
-We can then get the where-on-earth-id (woeid) and use it to hit the location api.
+この中の where-on-earth-id (woeid) を使って location api を叩くことができます。
 
-Navigate to [https://www.metaweather.com/api/location/44418](https://www.metaweather.com/api/location/44418) in your browser and you'll see the response for weather in London. It should look something like this:
+こちらの[https://www.metaweather.com/api/location/44418](https://www.metaweather.com/api/location/44418) ページをブラウザで開くと現在のロンドンの天気を取得することができます。レスポンスはこのようなフォーマットのはずです:
 
 ```json
 {
@@ -251,9 +251,9 @@ Navigate to [https://www.metaweather.com/api/location/44418](https://www.metawea
 }
 ```
 
-Great, now that we know what our data is going to look like, let’s create the necessary data models.
+これで返り値のフォーマットがわかりましたね！早速これを元にモデルを作っていきましょう。
 
-## Creating Our Weather Data Model
+## Weather Data モデルの作成
 
 Even though the weather API returns weather for multiple days, for simplicity, we're only going to worry about today's weather.
 
