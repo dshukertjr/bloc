@@ -255,25 +255,25 @@ flutter packages get
 
 ## Weather Data モデルの作成
 
-Even though the weather API returns weather for multiple days, for simplicity, we're only going to worry about today's weather.
+今回使用する API は向こう何日かの天気を返してくれますが、このアプリではその日の天気の情報しか使いません。
 
-Let's start off by creating a folder for our models `lib/models` and create a file in there called `weather.dart` which will hold our data model for our `Weather` class. Next inside of `lib/models` create a file called `models.dart` which is our barrel file where we export all models from.
+まずはモデルを入れておくためのふぉるだーを`lib/models`に作り、`Weather`クラスを定義する`weather.dart`というファイルを作りましょう。次に`lib/models`に`models.dart`というバレルファイルを作り、その中で全てのモデルをエクスポートします。
 
-#### Imports
+#### インポート
 
-First off we need to import our dependencies for our class. At the top of `weather.dart` go ahead and add:
+まずは dependency をインポートしましょう。`weather.dart`の一番上にこちらを追加してください:
 
 ```dart
 import 'package:equatable/equatable.dart';
 ```
 
-- `equatable`: Package that allows comparisons between objects without having to override the `==` operator
+- `equatable`: `==`オペレイターを上書きせずにオブジェクト同士の値が同じかどうかを比較できるパッケージ
 
-#### Create WeatherCondition Enum
+#### WeatherCondition Enum を作成
 
-Next we are going to create an enumerator for all our possible weather conditions. On the next line, let's add the enum.
+次に全ての天気に対応する enum を作成します。
 
-_These conditions come from the definition of the [metaweather API](https://www.metaweather.com/api/)_
+_これらの値は[metaweather API](https://www.metaweather.com/api/)の定義から来ています_
 
 ```dart
 enum WeatherCondition {
@@ -291,9 +291,9 @@ enum WeatherCondition {
 }
 ```
 
-#### Create Weather Model
+#### Weather Model の作成
 
-Next we need to create a class to be our defined data model for the weather object returned from the API. We are going to extract a subset of the data from the API and create a `Weather` model. Go ahead and add this to the `weather.dart` file below the `WeatherCondition` enum.
+次に API の戻り値を格納するデータモデルを定義しましょう。 API の戻り値の一部のデータを取り出して`Weather`モデルを作ります。下記のコードを`weather.dart`ファイルの`WeatherCondition` enum の下に追加してください。
 
 ```dart
 class Weather extends Equatable {
@@ -389,13 +389,13 @@ class Weather extends Equatable {
 }
 ```
 
-?> We extend [`Equatable`](https://pub.dev/packages/equatable) so that we can compare `Weather` instances. By default, the equality operator returns true if and only if this and other are the same instance.
+?> `Weather`クラスは[`Equatable`](https://pub.dev/packages/equatable) を継承しているので`Weather`同士を比較することができます。デフォルトでは == オペレイターはオブジェクト同士が同じインスタンスでないと true を返しません。
 
-There's not much happening here; we are just defining our `Weather` data model and implementing a `fromJson` method so that we can create a `Weather` instance from the API response body and creating a method that maps the raw string to a `WeatherCondition` in our enum.
+ここでは大したことは起こっていません。ただ`Weather`モデルを定義し、`Weather`を API の戻り値から作成する`fromJson`を定義し、String を`WeatherCondition` enum に変換してくれるメソッドを書いただけです。
 
-#### Export in Barrel
+#### バレルファイルでエクスポートする
 
-Now we need to export this class in our barrel file. Open up `lib/models/models.dart` and add the following line of code:
+次にこのクラスをバレルファイルでエクスポートしましょう。`lib/models/models.dart`を開いて次のコードを追加してください:
 
 `export 'weather.dart';`
 
