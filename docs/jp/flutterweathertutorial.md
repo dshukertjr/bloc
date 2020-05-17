@@ -401,28 +401,29 @@ class Weather extends Equatable {
 
 ## Data Provider
 
-Next, we need to build our `WeatherApiClient` which will be responsible for making http requests to the weather API.
+次に weather API に http リクエストを送ることを担う`WeatherApiClient`を作りましょう。
 
-> The `WeatherApiClient` is the lowest layer in our application architecture (the data provider). It's only responsibility is to fetch data directly from our API.
+> `WeatherApiClient` このアプリの中でもっともローレベルなレイヤーである data provider の一種です。API からデータを取得することのみが役割です。
 
-As we mentioned earlier, we are going to be hitting two endpoints so our `WeatherApiClient` needs to expose two public methods:
+少し前にお話ししたように、このアプリは２種類のエンドポイントにアクセスする必要があるので、`WeatherApiClient`は下記のような２種類の public メソッドを持つ必要があります:
 
 - `getLocationId(String city)`
 - `fetchWeather(int locationId)`
 
-#### Creating our Weather API Client
+#### Weather API Client の作成
 
-This layer of our application is called the repository layer, so let's go ahead and create a folder for our repositories. Inside of `lib/` create a folder called `repositories` and then create a file called `weather_api_client.dart`.
+今から作る部分はアプリ内でレポジトリーレイヤーと呼ばれるれいやーですので、早速レポジトリーを入れるためのフォルダーを作りましょう。`lib/`のなかに
+`repositories`というフォルダーを作り、その中に`weather_api_client.dart`というファイルを作りましょう。
 
-#### Adding a Barrel
+#### バレルファイルの追加
 
-Same as we did with our models, let's create a barrel file for our repositories. Inside of `lib/repositories` go ahead and add a file called `repositories.dart` and leave it blank for now.
+モデルを作った時と同じようにレポジトリーもバレルファイルを作りましょう。`lib/repositories`のなかに`repositories.dart`というファイルを作ります。一旦中身は白紙で構いません。
 
-- `models`: Lastly, we import our `Weather` model we created earlier.
+- `model`: 最後に先ほど作った`Weather`モデルを組み込んでいきましょう。
 
-#### Create Our WeatherApiClient class
+#### WeatherApiClient クラスの作成
 
-Let's create a class. Go ahead and add this:
+クラスを作りましょう。`weather_api_client.dart`こちらを記述してください:
 
 ```dart
 class WeatherApiClient {
