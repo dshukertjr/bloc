@@ -436,19 +436,19 @@ class WeatherApiClient {
 }
 ```
 
-Here we are creating a constant for our base URL and instantiating our http client. Then we are creating our Constructor and requiring that we inject an instance of httpClient. You'll see some missing dependencies. Let's go ahead and add them to the top of the file:
+ここでは API のベース URL をコンスタントとして定義し、http クライアントもプロパティとして定義しています。それに、コンストラクターを作り、http クライアントを受け取れるようにしています。一部 dependency が足りないので、それらをこのファイルの上部に追加していきましょう。
 
 ```dart
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 ```
 
-- `meta`: Defines annotations that can be used by the tools that are shipped with the Dart SDK.
-- `http`: A composable, Future-based library for making HTTP requests.
+- `meta`: Dart の SDK と一緒に付いてくるアノテーション用のパッケージ
+- `http`: Future 型で http リクエストを送るためのパッケージ
 
-#### Add getLocationId Method
+#### getLocationId メソッドを追加する
 
-Now let's add our first public method, which will get the locationId for a given city. Below the constructor, go ahead and add:
+ここまできたら次に最初のパブリックメソッドを追加しましょう。このメソッドは特定の都市の locationId を取得してくれます。コンストラクターの下に下記を追加しましょう。
 
 ```dart
 Future<int> getLocationId(String city) async {
@@ -463,7 +463,7 @@ Future<int> getLocationId(String city) async {
 }
 ```
 
-Here we are just making a simple HTTP request and then decoding the response as a list. Speaking of decoding, you'll see `jsonDecode` is a function from a dependency we need to import. So let's go ahead and do that now. At the top of the file by the other imports go ahead and add:
+ここではシンプルに http リクエストを送信し、そのレスポンスを List 型に変換しているだけです。変換するといえば、`jsonDecode`というメソッドは外部のパッケージからインポートしてくる必要があります。なので、早速インポートしてしまいましょう。ファイルの最上部に下記を追加してください。
 
 ```dart
 import 'dart:convert';
