@@ -469,11 +469,11 @@ Future<int> getLocationId(String city) async {
 import 'dart:convert';
 ```
 
-- `dart:convert`: Encoder/Decoder for converting between different data representations, including JSON and UTF-8.
+- `dart:convert`: JSON や UTF-8 をはじめとした様々なデータを変換するライブラリー
 
-#### Add fetchWeather Method
+#### fetchWeather メソッドを追加する
 
-Next up let's add our other method to hit the metaweather API. This one will get the weather for a city given it's locationId. Below the `getLocationId` method we just implemented, let's go ahead and add this:
+次に metaWeather API と通信をするもう一つのメソッドを作りましょう。このメソッドは locationId からその都市の天気を取得してくれるメソッドです。`getLocationId`メソッドの下にこちらを追加してください：
 
 ```dart
 Future<Weather> fetchWeather(int locationId) async {
